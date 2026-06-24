@@ -26,7 +26,7 @@ jobs:
         script: |
           # 1. In den Ordner des Backends auf dem Server wechseln
           # (Passe den Pfad an, je nachdem wo dein Backend auf der Ubuntu-Instanz liegt!)
-          cd /var/www/vokabel-backend/AnkiBackend
+          cd /var/www/vokabel-backend || cd ~/AnkiBackend
 
           # 2. Den neuesten Code von GitHub ziehen
           git pull origin main
