@@ -76,6 +76,35 @@ app.get('/api/saetze/:benutzer_id', async (req, res) => {
   }
 });
 
+// --- NEUE ROUTE 3.1: ALLE VOKABELSÄTZE VON ALLEN USERSN ABFRAGEN ---
+
+app.get('/api/saetze/', async (req, res) => {
+  try {
+    const result = await pool.query(
+      'SELECT * FROM vokabelsaetze;',
+    );
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Fehler beim Laden der Vokabelsätze.' });
+  }
+});
+
+// --- NEUE ROUTE 3.2: ALLE USER AUSFRAGEN ---
+
+app.get('/api/users/', async (req, res) => {
+  try {
+    const result = await pool.query(
+      'SELECT * FROM benutzer;',
+    );
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Fehler beim Laden der Vokabelsätze.' });
+  }
+});
+
+
 // --- NEUE ROUTE 4: ALLE VOKABELN EINES SPEZIFISCHEN SATZES LADEN ---
 // Holt die Karten für das Quiz, sobald ein DB-Deck gestartet wird
 app.get('/api/vokabeln/satz/:satz_id', async (req, res) => {

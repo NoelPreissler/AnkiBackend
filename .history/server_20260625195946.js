@@ -12,7 +12,7 @@ app.use(express.json());  // Ermöglicht dem Server, JSON-Daten zu lesen
 // Verbindung zur PostgreSQL-Datenbank einrichten
 const pool = new Pool({
   user: 'postgres',               // Dein DB-Nutzer
-  host: '193.197.231.68',              // Da das Backend auf demselben Server läuft
+  host: 'localhost',              // Da das Backend auf demselben Server läuft
   database: 'AnkiDB',             // Name deiner Datenbank
   password: 'Kurtlarvadisi',      // Das Passwort des Nutzers
   port: 8888,                     // Dein geänderter PostgreSQL-Port!
@@ -75,6 +75,35 @@ app.get('/api/saetze/:benutzer_id', async (req, res) => {
     res.status(500).json({ error: 'Fehler beim Laden der Vokabelsätze.' });
   }
 });
+
+// --- NEUE ROUTE 3.1: ALLE VOKABELSÄTZE VON ALLEN USERSN ABFRAGEN ---
+
+app.get('/api/saetze/', async (req, res) => {
+  try {
+    const result = await pool.query(
+      'SELECT * FROM vokabelsaetze;',
+    );
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Fehler beim Laden der Vokabelsätze.' });
+  }
+});
+
+// --- NEUE ROUTE 3.2: ALLE USER AUSFRAGEN ---
+
+app.get('/api/users/', async (req, res) => {
+  try {
+    const result = await pool.query(
+      'SELECT * FROM benutzer;',
+    );
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Fehler beim Laden der Vokabelsätze.' });
+  }
+});
+
 
 // --- NEUE ROUTE 4: ALLE VOKABELN EINES SPEZIFISCHEN SATZES LADEN ---
 // Holt die Karten für das Quiz, sobald ein DB-Deck gestartet wird
@@ -139,6 +168,29 @@ app.post('/api/vokabeln/upload', async (req, res) => {
     await pool.query('ROLLBACK'); // Bei Fehlern komplett zurückrollen
     console.error(err);
     res.status(500).json({ error: 'Fehler beim Speichern der Vokabeln.' });
+  }
+});
+
+
+// --- ROUTE 6: EINEN GANZEN VOKABELSATZ LÖSCHEN ---
+// Löscht den Satz und alle Vokabeln, die mit diesem Satz verknüpft sind
+app.delete('/api/saetze/:satz_id', async (req, res) => {
+  const { satz_id } = req.params;
+
+  try {
+    const result = await pool.query(
+      'DELETE FROM vokabelsaetze WHERE id = $1 RETURNING *',
+      [satz_id]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: 'Vokabelsatz nicht gefunden.' });
+    }
+
+    res.json({ message: `Vokabelsatz "${result.rows[0].name}" erfolgreich gelöscht.` });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Fehler beim Löschen des Vokabelsatzes.' });
   }
 });
 

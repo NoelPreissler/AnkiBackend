@@ -32,7 +32,7 @@ jobs:
             sudo git reset --hard origin/main
 
             # 4. Neue npm-Pakete installieren
-            sudo npm install --production
+            npm install --production
 
             # 5. Die Anwendung mit PM2 neu starten
-            sudo pm2 restart vokabel-backend 
+            pm2 restart vokabel-backend 
