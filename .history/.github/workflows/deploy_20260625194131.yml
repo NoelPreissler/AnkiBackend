@@ -37,4 +37,4 @@
 
             # 5. Die Anwendung mit PM2 neu starten, damit die Änderungen aktiv werden
             # (Wir haben das Backend in der Anleitung zuvor "vokabel-backend" genannt)
-            sudo pm2 restart vokabel-backend && sudo touch a && echo "Testfile"
+            sudo pm2 restart vokabel-backend
