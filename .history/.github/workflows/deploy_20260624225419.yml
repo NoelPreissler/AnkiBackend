@@ -29,8 +29,7 @@ jobs:
           cd /var/www/vokabel-backend/AnkiBackend
 
           # 2. Den neuesten Code von GitHub ziehen
-          sudo git fetch origin main
-          sudo git reset --hard origin/main
+          sudo git pull origin main
 
           # 4. Neue npm-Pakete installieren (falls in der package.json etwas hinzugefügt wurde)
           sudo npm install --production
